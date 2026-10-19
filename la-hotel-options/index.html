@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA Hotel Options — Koreatown &amp; Expo Park</title>
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --card: #ffffff;
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --accent: #b45309;
+    --accent-soft: #fef3e2;
+    --line: #e7e2d8;
+    --ktown: #7c3aed;
+    --expo: #0e7490;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  header.hero {
+    background: linear-gradient(135deg, #1e293b 0%, #312e5e 60%, #4c1d95 100%);
+    color: #fff;
+    padding: 56px 0 44px;
+  }
+  header.hero h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -0.02em; }
+  header.hero p { margin-top: 10px; max-width: 640px; color: #cbd5e1; font-size: 1.05rem; }
+  .hero-badges { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero-badges span {
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
+    padding: 5px 14px; border-radius: 999px; font-size: 0.85rem;
+  }
+
+  /* comparison table */
+  section.table-sec { padding: 36px 0 8px; }
+  h2.sec-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 4px; }
+  p.sec-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 18px; }
+  .table-scroll { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+  table { width: 100%; border-collapse: collapse; min-width: 720px; font-size: 0.95rem; }
+  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--line); }
+  th { background: #faf8f4; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  tr:last-child td { border-bottom: none; }
+  td.price { font-weight: 700; color: var(--accent); white-space: nowrap; }
+  .dist { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot.k { background: var(--ktown); }
+  .dot.e { background: var(--expo); }
+
+  /* cards */
+  section.cards { padding: 32px 0 24px; display: grid; gap: 28px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .card-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 16px; padding: 22px 26px 0; }
+  .card-head h3 { font-size: 1.3rem; font-weight: 800; }
+  .price-tag {
+    background: var(--accent-soft); color: var(--accent); font-weight: 800;
+    padding: 3px 12px; border-radius: 999px; font-size: 1rem; white-space: nowrap;
+  }
+  .addr { padding: 2px 26px 0; color: var(--muted); font-size: 0.9rem; }
+  .chips { padding: 12px 26px 0; display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { font-size: 0.8rem; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+  .chip.k { border-color: #ddd0f5; background: #f5f0ff; color: var(--ktown); }
+  .chip.e { border-color: #c7e8ee; background: #effafc; color: var(--expo); }
+
+  .gallery { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 6px; padding: 18px 26px 0; }
+  @media (max-width: 640px) { .gallery { grid-template-columns: 1fr 1fr; } .gallery img:first-child { grid-column: 1 / -1; } }
+  .gallery img {
+    width: 100%; height: 170px; object-fit: cover; border-radius: 10px; background: #eee;
+  }
+  .card-body { padding: 16px 26px 24px; }
+  .card-body ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  .card-body li { font-size: 0.92rem; color: #374151; }
+  .card-body li::before { content: "✓"; color: #16a34a; font-weight: 700; margin-right: 6px; }
+  .links { margin-top: 14px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .links a { font-size: 0.9rem; color: var(--accent); text-decoration: none; font-weight: 600; }
+  .links a:hover { text-decoration: underline; }
+
+  footer { padding: 30px 0 46px; color: var(--muted); font-size: 0.85rem; }
+  footer p { max-width: 760px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>LA Hotel Options 🏨</h1>
+    <p>Five hotels I found on my booking portal — all in or near Koreatown / Downtown LA, all a short drive to Exposition Park. Distances below are straight-line; driving takes a bit longer.</p>
+    <div class="hero-badges">
+      <span>📍 Near Korea Town</span>
+      <span>🚗 ~10–15 min drive to Expo Park</span>
+      <span>💵 $223–280 / night</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="table-sec">
+    <h2 class="sec-title">Quick comparison</h2>
+    <p class="sec-sub">Sorted by price. Distance to Expo Park is the one that matters most for our drive.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Hotel</th>
+            <th>Price / night</th>
+            <th><span class="dot k"></span> Korea Town (center)</th>
+            <th><span class="dot e"></span> Exposition Park</th>
+            <th>Area</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Olyver Hotel</td><td class="price">$223</td><td><span class="dist"><span class="dot k"></span>1.3 mi</span></td><td><span class="dist"><span class="dot e"></span>2.5 mi</span></td><td>Koreatown edge</td></tr>
+          <tr><td>The Biltmore Los Angeles</td><td class="price">$224</td><td><span class="dist"><span class="dot k"></span>3.3 mi</span></td><td><span class="dist"><span class="dot e"></span>3.0 mi</span></td><td>Downtown</td></tr>
+          <tr><td>Garden Suite Hotel</td><td class="price">$232</td><td><span class="dist"><span class="dot k"></span>0.1 mi</span></td><td><span class="dist"><span class="dot e"></span>3.3 mi</span></td><td>Heart of Koreatown</td></tr>
+          <tr><td>Oxford Palace Hotel &amp; Galleria</td><td class="price">$253</td><td><span class="dist"><span class="dot k"></span>0.3 mi</span></td><td><span class="dist"><span class="dot e"></span>3.1 mi</span></td><td>Koreatown</td></tr>
+          <tr><td>Hotel Indigo LA Downtown</td><td class="price">$280</td><td><span class="dist"><span class="dot k"></span>2.8 mi</span></td><td><span class="dist"><span class="dot e"></span>2.5 mi</span></td><td>Downtown</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="cards">
+
+    <article class="card">
+      <div class="card-head"><h3>Olyver Hotel</h3><span class="price-tag">$223 / night</span></div>
+      <p class="addr">2666 W Olympic Blvd, Los Angeles, CA 90006</p>
+      <div class="chips">
+        <span class="chip k"><span class="dot k"></span> 1.3 mi to K-Town</span>
+        <span class="chip e"><span class="dot e"></span> 2.5 mi to Expo Park</span>
+        <span class="chip">🅿️ Free parking</span>
+      </div>
+      <div class="gallery">
+        <img src="images/olyver-room.webp" alt="Olyver Hotel — guest room">
+        <img src="images/olyver-lobby.webp" alt="Olyver Hotel — lobby">
+        <img src="images/olyver-lobby2.webp" alt="Olyver Hotel — interior">
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Free parking with 24-hr security</li>
+          <li>Free WiFi</li>
+          <li>On-site restaurant</li>
+          <li>24-hour front desk</li>
+        </ul>
+        <div class="links">
+          <a href="https://olyverhotel.com/" target="_blank" rel="noopener">Official site ↗</a>
+          <a href="https://maps.google.com/?q=Olyver+Hotel+2666+W+Olympic+Blvd+Los+Angeles" target="_blank" rel="noopener">Map ↗</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><h3>The Biltmore Los Angeles</h3><span class="price-tag">$224 / night</span></div>
+      <p class="addr">506 S Grand Ave, Los Angeles, CA 90071</p>
+      <div class="chips">
+        <span class="chip k"><span class="dot k"></span> 3.3 mi to K-Town</span>
+        <span class="chip e"><span class="dot e"></span> 3.0 mi to Expo Park</span>
+        <span class="chip">🏛️ Historic 1923 landmark</span>
+      </div>
+      <div class="gallery">
+        <img src="images/biltmore-room.jpg" alt="The Biltmore — guest room">
+        <img src="images/biltmore-lobby.jpg" alt="The Biltmore — lobby">
+        <img src="images/biltmore-galleria.jpg" alt="The Biltmore — galleria">
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Iconic 1923 hotel, LA Historic-Cultural Monument</li>
+          <li>Ornate lobbies &amp; famous ballrooms</li>
+          <li>Right by Pershing Square, downtown</li>
+          <li>Restaurant &amp; chic cocktail bar on site</li>
+        </ul>
+        <div class="links">
+          <a href="https://www.millenniumhotels.com/en/los-angeles/millennium-biltmore-hotel-los-angeles" target="_blank" rel="noopener">Official site ↗</a>
+          <a href="https://maps.google.com/?q=Biltmore+Los+Angeles+506+S+Grand+Ave" target="_blank" rel="noopener">Map ↗</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><h3>Garden Suite Hotel</h3><span class="price-tag">$232 / night</span></div>
+      <p class="addr">681 S Western Ave, Los Angeles, CA 90005</p>
+      <div class="chips">
+        <span class="chip k"><span class="dot k"></span> 0.1 mi to K-Town center</span>
+        <span class="chip e"><span class="dot e"></span> 3.3 mi to Expo Park</span>
+        <span class="chip">🅿️ Free parking</span>
+      </div>
+      <div class="gallery">
+        <img src="images/garden-room.jpg" alt="Garden Suite Hotel — deluxe room">
+        <img src="images/garden-lobby.jpg" alt="Garden Suite Hotel — lobby">
+        <img src="images/garden-ext.jpg" alt="Garden Suite Hotel — entrance">
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Dead center of Koreatown (Western Ave, off Wilshire)</li>
+          <li>Free parking for one vehicle per room</li>
+          <li>Self check-in kiosks</li>
+          <li>Suites with kitchenettes available</li>
+        </ul>
+        <div class="links">
+          <a href="https://gardensuitehotel.com/" target="_blank" rel="noopener">Official site ↗</a>
+          <a href="https://maps.google.com/?q=Garden+Suite+Hotel+681+S+Western+Ave+Los+Angeles" target="_blank" rel="noopener">Map ↗</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><h3>Oxford Palace Hotel &amp; Galleria</h3><span class="price-tag">$253 / night</span></div>
+      <p class="addr">745 S Oxford Ave, Los Angeles, CA 90005</p>
+      <div class="chips">
+        <span class="chip k"><span class="dot k"></span> 0.3 mi to K-Town</span>
+        <span class="chip e"><span class="dot e"></span> 3.1 mi to Expo Park</span>
+        <span class="chip">🍜 Korean restaurant</span>
+      </div>
+      <div class="gallery">
+        <img src="images/oxford-room.jpg" alt="Oxford Palace — guest room">
+        <img src="images/oxford-lobby.jpg" alt="Oxford Palace — lobby with waterfall">
+        <img src="images/oxford-ext.jpg" alt="Oxford Palace — hotel">
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Lobby with waterfall &amp; marble accents</li>
+          <li>Full-service Korean dining on site</li>
+          <li>Shopping galleria in the building</li>
+          <li>Walking distance to Koreatown dining &amp; shops</li>
+        </ul>
+        <div class="links">
+          <a href="https://oxfordhotel.com/" target="_blank" rel="noopener">Official site ↗</a>
+          <a href="https://maps.google.com/?q=Oxford+Palace+Hotel+745+S+Oxford+Ave+Los+Angeles" target="_blank" rel="noopener">Map ↗</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><h3>Hotel Indigo LA Downtown <small style="font-weight:400;color:var(--muted)">by IHG</small></h3><span class="price-tag">$280 / night</span></div>
+      <p class="addr">899 Francisco St, Los Angeles, CA 90017</p>
+      <div class="chips">
+        <span class="chip k"><span class="dot k"></span> 2.8 mi to K-Town</span>
+        <span class="chip e"><span class="dot e"></span> 2.5 mi to Expo Park</span>
+        <span class="chip">🌃 Rooftop bar</span>
+      </div>
+      <div class="gallery">
+        <img src="images/indigo-room.jpg" alt="Hotel Indigo — guest room">
+        <img src="images/indigo-lobby.jpg" alt="Hotel Indigo — lobby bar">
+        <img src="images/indigo-ext.jpeg" alt="Hotel Indigo — hotel">
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Newest &amp; most upscale of the five</li>
+          <li>18 Social rooftop bar + Metropole Kitchen &amp; Bar</li>
+          <li>Walk to Crypto.com Arena &amp; LA Live</li>
+          <li>Valet parking (extra fee)</li>
+        </ul>
+        <div class="links">
+          <a href="https://www.thehotelindigola.com/" target="_blank" rel="noopener">Official site ↗</a>
+          <a href="https://maps.google.com/?q=Hotel+Indigo+Los+Angeles+Downtown+899+Francisco+St" target="_blank" rel="noopener">Map ↗</a>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <footer>
+    <p><strong>Notes:</strong> Prices are what I'm seeing on my booking portal (before taxes/fees) — double-check at booking time. Distances are straight-line from the hotel to the center of Korea Town (Wilshire &amp; Western) and to Exposition Park; actual driving distance/time is a bit longer depending on traffic. Photos are from the hotels' official sites and public listings.</p>
+  </footer>
+
+</main>
+</body>
+</html>
