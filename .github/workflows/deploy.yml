@@ -1,0 +1,53 @@
+name: Deploy Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Assemble all top-level site folders into one artifact root.
+      # Each folder becomes /<folder>/ on the Pages site.
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          shopt -s extglob
+          for d in */; do
+            d="${d%/}"
+            case "$d" in
+              _site|.github) continue ;;
+            esac
+            cp -r "$d" _site/
+          done
+          # top-level loose files (e.g. index.html at root) if any
+          for f in *.html *.css *.js; do
+            [ -e "$f" ] && cp "$f" _site/ || true
+          done
+          [ -e _site/index.html ] || cp _site/la-hotel-options/index.html _site/index.html 2>/dev/null || true
+          ls -la _site
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
