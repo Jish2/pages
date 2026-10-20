@@ -53,37 +53,70 @@
   .dot.k { background: var(--ktown); }
   .dot.e { background: var(--expo); }
 
-  /* cards — side by side */
-  section.cards { padding: 32px 0 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 22px; align-items: start; }
+  /* cards — row layout */
+  section.cards { padding: 32px 0 24px; display: flex; flex-direction: column; gap: 18px; }
   .card {
     background: var(--card); border: 1px solid var(--line); border-radius: 18px;
     overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    display: flex; flex-direction: column;
+    display: grid; grid-template-columns: 340px 1fr;
+    transition: box-shadow 0.15s, border-color 0.15s;
   }
-  .card-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; padding: 18px 20px 0; }
-  .card-head h3 { font-size: 1.1rem; font-weight: 800; }
+  .card.selected { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .card-media .gallery { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 4px; padding: 12px; height: 100%; }
+  .card-media .gallery img { width: 100%; height: 100%; min-height: 105px; object-fit: cover; border-radius: 8px; background: #eee; }
+  .card-media .gallery img:first-child { grid-row: span 2; }
+  .card-content { padding: 16px 20px 16px 0; display: flex; flex-direction: column; }
+  .card-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; padding: 0 0 0 20px; }
+  .card-head h3 { font-size: 1.15rem; font-weight: 800; }
   .price-tag {
     background: var(--accent-soft); color: var(--accent); font-weight: 800;
     padding: 3px 12px; border-radius: 999px; font-size: 0.95rem; white-space: nowrap;
   }
-  .pp-line { padding: 4px 20px 0; font-size: 0.82rem; color: var(--muted); }
+  .pp-line { padding: 4px 0 0 20px; font-size: 0.82rem; color: var(--muted); }
   .pp-line strong { color: var(--ink); font-size: 0.95rem; }
-  .addr { padding: 2px 20px 0; color: var(--muted); font-size: 0.85rem; }
-  .chips { padding: 10px 20px 0; display: flex; gap: 6px; flex-wrap: wrap; }
+  .addr { padding: 2px 0 0 20px; color: var(--muted); font-size: 0.85rem; }
+  .chips { padding: 10px 0 0 20px; display: flex; gap: 6px; flex-wrap: wrap; }
   .chip { font-size: 0.78rem; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
   .chip.k { border-color: #ddd0f5; background: #f5f0ff; color: var(--ktown); }
   .chip.e { border-color: #c7e8ee; background: #effafc; color: var(--expo); }
-
-  .gallery { display: grid; grid-template-columns: 2fr 1fr; gap: 5px; padding: 14px 20px 0; }
-  .gallery img { width: 100%; height: 110px; object-fit: cover; border-radius: 8px; background: #eee; }
-  .gallery img:first-child { grid-row: span 2; height: 225px; }
-  .card-body { padding: 12px 20px 20px; }
-  .card-body ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
-  .card-body li { font-size: 0.88rem; color: #374151; }
+  .card-body { padding: 12px 0 0 20px; }
+  .card-body ul { list-style: none; columns: 2; column-gap: 24px; }
+  .card-body li { font-size: 0.88rem; color: #374151; break-inside: avoid; }
   .card-body li::before { content: "✓"; color: #16a34a; font-weight: 700; margin-right: 6px; }
-  .links { margin-top: 14px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .links { margin-top: 12px; display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
   .links a { font-size: 0.9rem; color: var(--accent); text-decoration: none; font-weight: 600; }
   .links a:hover { text-decoration: underline; }
+  .compare-btn {
+    margin-left: auto; font-size: 0.82rem; font-weight: 700; cursor: pointer;
+    border: 1.5px solid var(--line); background: #fff; color: var(--muted);
+    padding: 5px 14px; border-radius: 999px; user-select: none;
+  }
+  .compare-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  @media (max-width: 760px) {
+    .card { grid-template-columns: 1fr; }
+    .card-content { padding: 0 20px 18px; }
+    .card-head, .pp-line, .addr, .chips, .card-body { padding-left: 0; }
+    .card-body ul { columns: 1; }
+  }
+
+  /* compare panel */
+  #comparePanel { display: none; }
+  #comparePanel.active { display: block; position: sticky; top: 0; z-index: 50; padding: 14px 0 10px; background: var(--bg); }
+  .cp-inner {
+    background: #1e293b; color: #fff; border-radius: 16px; padding: 14px 16px;
+    overflow-x: auto; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+  .cp-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .cp-head h4 { font-size: 0.95rem; font-weight: 700; }
+  .cp-head button { margin-left: auto; background: rgba(255,255,255,0.12); color: #fff; border: none; border-radius: 999px; padding: 4px 14px; font-size: 0.8rem; cursor: pointer; }
+  .cp-grid { display: grid; gap: 12px; }
+  .cp-col { background: rgba(255,255,255,0.06); border-radius: 12px; overflow: hidden; }
+  .cp-col img { width: 100%; height: 100px; object-fit: cover; }
+  .cp-col .cp-body { padding: 8px 12px 12px; font-size: 0.82rem; }
+  .cp-col h5 { font-size: 0.92rem; margin-bottom: 2px; }
+  .cp-col .cp-price { color: #fbbf24; font-weight: 800; font-size: 0.95rem; }
+  .cp-col .cp-sub { color: #cbd5e1; font-size: 0.78rem; margin-top: 2px; }
+  .cp-col .cp-dists { margin-top: 6px; color: #94a3b8; font-size: 0.78rem; }
 
   footer { padding: 30px 0 46px; color: var(--muted); font-size: 0.85rem; }
   footer p { max-width: 760px; }
@@ -105,6 +138,13 @@
 
 <main class="wrap">
 
+  <div id="comparePanel">
+    <div class="cp-inner">
+      <div class="cp-head"><h4>⚖️ Comparing <span id="cpCount">0</span> hotels</h4><button onclick="clearCompare()">Clear</button></div>
+      <div class="cp-grid" id="cpGrid"></div>
+    </div>
+  </div>
+
   <section class="table-sec">
     <h2 class="sec-title">Quick comparison</h2>
     <p class="sec-sub">Sorted by true per-person cost (room + parking, split two ways). Parking rates are from each hotel's official site. DoubleTree room rate is from the shared Kayak deal ($633 total / 3 nights, before taxes ≈ $211/night). The Hilton, Indigo, and Westin totals are 3-night package quotes (~$301, ~$382, ~$384 per night) shown at per-person totals.</p>
@@ -123,6 +163,7 @@
         </thead>
         <tbody>
           <tr><td>Olyver Hotel</td><td class="price">$223</td><td>$0 🅿️ free</td><td>$223</td><td class="price">$112</td><td><span class="dist"><span class="dot k"></span>1.3 mi</span></td><td><span class="dist"><span class="dot e"></span>2.5 mi</span></td></tr>
+          <tr><td>Hotel Koxie</td><td class="price">$210</td><td>$15 self</td><td>$225</td><td class="price">~$113</td><td><span class="dist"><span class="dot k"></span>0.7 mi</span></td><td><span class="dist"><span class="dot e"></span>2.9 mi</span></td></tr>
           <tr><td>Garden Suite Hotel</td><td class="price">$232</td><td>$0 🅿️ free</td><td>$232</td><td class="price">$116</td><td><span class="dist"><span class="dot k"></span>0.1 mi</span></td><td><span class="dist"><span class="dot e"></span>3.3 mi</span></td></tr>
           <tr><td>DoubleTree by Hilton LA Downtown</td><td class="price">~$211</td><td>$49 self</td><td>~$260</td><td class="price">~$130</td><td><span class="dist"><span class="dot k"></span>3.9 mi</span></td><td><span class="dist"><span class="dot e"></span>3.4 mi</span></td></tr>
           <tr><td>The Biltmore Los Angeles</td><td class="price">$224</td><td>$50 self / $65 valet</td><td>$274</td><td class="price">$137</td><td><span class="dist"><span class="dot k"></span>3.3 mi</span></td><td><span class="dist"><span class="dot e"></span>3.0 mi</span></td></tr>
@@ -137,231 +178,287 @@
 
   <section class="cards">
 
-    <article class="card">
-      <div class="card-head"><h3>Olyver Hotel</h3><span class="price-tag">$112 / person</span></div>
-      <p class="pp-line">$223 room + $0 parking (free) = <strong>$223 total</strong></p>
-      <p class="addr">2666 W Olympic Blvd, Los Angeles, CA 90006</p>
-      <div class="chips">
+    <article class="card" data-name="Hotel Koxie" data-pp="~$113 / person" data-dk="0.7" data-de="2.9" data-img="images/koxie-room.jpg">
+      <div class="card-media"><div class="gallery">
+        <img src="images/koxie-room.jpg" alt="Hotel Koxie — guest room">
+        <img src="images/koxie-lobby.jpg" alt="Hotel Koxie — lobby">
+        <img src="images/koxie-ext.jpg" alt="Hotel Koxie — hotel">
+      </div></div>
+      <div class="card-content">
+        <div class="card-head"><h3>Hotel Koxie</h3><span class="price-tag">~$113 / person</span></div>
+        <p class="pp-line">$210 room + $15 self parking = <strong>$225 total</strong></p>
+        <p class="addr">3411 W Olympic Blvd, Los Angeles, CA 90019</p>
+        <div class="chips">
+        <span class="chip k"><span class="dot k"></span> 0.7 mi to K-Town</span>
+        <span class="chip e"><span class="dot e"></span> 2.9 mi to Expo Park</span>
+        <span class="chip">🅿️ $15 self parking</span>
+        <span class="chip">⭐ 7.6 Good (1,698 reviews)</span>
+      </div>
+        <div class="card-body">
+        <ul>
+          <li>Chic modern 3-star, west edge of Koreatown near K-Town Galleria</li>
+          <li>Cheap self-parking with in/out privileges ($15/day)</li>
+          <li>24-hour reception, clean &amp; quiet rooms</li>
+          <li>Right on Olympic Blvd — straight shot toward Expo Park</li>
+        </ul>
+        
+        <div class="links">
+<a href="https://www.hotelkoxie.com/" target="_blank" rel="noopener">Official site ↗</a>
+          <a href="https://maps.google.com/?q=Hotel+Koxie+3411+W+Olympic+Blvd+Los+Angeles" target="_blank" rel="noopener">Map ↗</a>
+          <span class="compare-btn" onclick="toggleCompare(this)" data-on="0">⚖️ Compare</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-name="Olyver Hotel" data-pp="$112 / person" data-dk="1.3" data-de="2.5" data-img="images/olyver-room.webp">
+      <div class="card-media"><div class="gallery">
+        <img src="images/olyver-room.webp" alt="Olyver Hotel — guest room">
+        <img src="images/olyver-lobby.webp" alt="Olyver Hotel — lobby">
+        <img src="images/olyver-lobby2.webp" alt="Olyver Hotel — interior">
+      </div></div>
+      <div class="card-content">
+        <div class="card-head"><h3>Olyver Hotel</h3><span class="price-tag">$112 / person</span></div>
+        <p class="pp-line">$223 room + $0 parking (free) = <strong>$223 total</strong></p>
+        <p class="addr">2666 W Olympic Blvd, Los Angeles, CA 90006</p>
+        <div class="chips">
         <span class="chip k"><span class="dot k"></span> 1.3 mi to K-Town</span>
         <span class="chip e"><span class="dot e"></span> 2.5 mi to Expo Park</span>
         <span class="chip">🅿️ Free parking</span>
       </div>
-      <div class="gallery">
-        <img src="images/olyver-room.webp" alt="Olyver Hotel — guest room">
-        <img src="images/olyver-lobby.webp" alt="Olyver Hotel — lobby">
-        <img src="images/olyver-lobby2.webp" alt="Olyver Hotel — interior">
-      </div>
-      <div class="card-body">
+        <div class="card-body">
         <ul>
           <li>Free parking with 24-hr security</li>
           <li>Free WiFi</li>
           <li>On-site restaurant</li>
           <li>24-hour front desk</li>
         </ul>
+        
         <div class="links">
-          <a href="https://olyverhotel.com/" target="_blank" rel="noopener">Official site ↗</a>
+<a href="https://olyverhotel.com/" target="_blank" rel="noopener">Official site ↗</a>
           <a href="https://maps.google.com/?q=Olyver+Hotel+2666+W+Olympic+Blvd+Los+Angeles" target="_blank" rel="noopener">Map ↗</a>
+          <span class="compare-btn" onclick="toggleCompare(this)" data-on="0">⚖️ Compare</span>
         </div>
       </div>
     </article>
 
-    <article class="card">
-      <div class="card-head"><h3>The Biltmore Los Angeles</h3><span class="price-tag">$137 / person</span></div>
-      <p class="pp-line">$224 room + $50 self parking = <strong>$274 total</strong></p>
-      <p class="addr">506 S Grand Ave, Los Angeles, CA 90071</p>
-      <div class="chips">
+    <article class="card" data-name="The Biltmore Los Angeles" data-pp="$137 / person" data-dk="3.3" data-de="3.0" data-img="images/biltmore-room.jpg">
+      <div class="card-media"><div class="gallery">
+        <img src="images/biltmore-room.jpg" alt="The Biltmore — guest room">
+        <img src="images/biltmore-lobby.jpg" alt="The Biltmore — lobby">
+        <img src="images/biltmore-galleria.jpg" alt="The Biltmore — galleria">
+      </div></div>
+      <div class="card-content">
+        <div class="card-head"><h3>The Biltmore Los Angeles</h3><span class="price-tag">$137 / person</span></div>
+        <p class="pp-line">$224 room + $50 self parking = <strong>$274 total</strong></p>
+        <p class="addr">506 S Grand Ave, Los Angeles, CA 90071</p>
+        <div class="chips">
         <span class="chip k"><span class="dot k"></span> 3.3 mi to K-Town</span>
         <span class="chip e"><span class="dot e"></span> 3.0 mi to Expo Park</span>
         <span class="chip">🅿️ $50 self / $65 valet</span>
         <span class="chip">🏛️ Historic 1923 landmark</span>
       </div>
-      <div class="gallery">
-        <img src="images/biltmore-room.jpg" alt="The Biltmore — guest room">
-        <img src="images/biltmore-lobby.jpg" alt="The Biltmore — lobby">
-        <img src="images/biltmore-galleria.jpg" alt="The Biltmore — galleria">
-      </div>
-      <div class="card-body">
+        <div class="card-body">
         <ul>
           <li>Iconic 1923 hotel, LA Historic-Cultural Monument</li>
           <li>Ornate lobbies &amp; famous ballrooms</li>
           <li>Right by Pershing Square, downtown</li>
           <li>Restaurant &amp; chic cocktail bar on site</li>
         </ul>
+        
         <div class="links">
-          <a href="https://www.millenniumhotels.com/en/los-angeles/millennium-biltmore-hotel-los-angeles" target="_blank" rel="noopener">Official site ↗</a>
+<a href="https://www.millenniumhotels.com/en/los-angeles/millennium-biltmore-hotel-los-angeles" target="_blank" rel="noopener">Official site ↗</a>
           <a href="https://maps.google.com/?q=Biltmore+Los+Angeles+506+S+Grand+Ave" target="_blank" rel="noopener">Map ↗</a>
+          <span class="compare-btn" onclick="toggleCompare(this)" data-on="0">⚖️ Compare</span>
         </div>
       </div>
     </article>
 
-    <article class="card">
-      <div class="card-head"><h3>Garden Suite Hotel</h3><span class="price-tag">$116 / person</span></div>
-      <p class="pp-line">$232 room + $0 parking (free) = <strong>$232 total</strong></p>
-      <p class="addr">681 S Western Ave, Los Angeles, CA 90005</p>
-      <div class="chips">
+    <article class="card" data-name="Garden Suite Hotel" data-pp="$116 / person" data-dk="0.1" data-de="3.3" data-img="images/garden-room.jpg">
+      <div class="card-media"><div class="gallery">
+        <img src="images/garden-room.jpg" alt="Garden Suite Hotel — deluxe room">
+        <img src="images/garden-lobby.jpg" alt="Garden Suite Hotel — lobby">
+        <img src="images/garden-ext.jpg" alt="Garden Suite Hotel — entrance">
+      </div></div>
+      <div class="card-content">
+        <div class="card-head"><h3>Garden Suite Hotel</h3><span class="price-tag">$116 / person</span></div>
+        <p class="pp-line">$232 room + $0 parking (free) = <strong>$232 total</strong></p>
+        <p class="addr">681 S Western Ave, Los Angeles, CA 90005</p>
+        <div class="chips">
         <span class="chip k"><span class="dot k"></span> 0.1 mi to K-Town center</span>
         <span class="chip e"><span class="dot e"></span> 3.3 mi to Expo Park</span>
         <span class="chip">🅿️ Free parking</span>
       </div>
-      <div class="gallery">
-        <img src="images/garden-room.jpg" alt="Garden Suite Hotel — deluxe room">
-        <img src="images/garden-lobby.jpg" alt="Garden Suite Hotel — lobby">
-        <img src="images/garden-ext.jpg" alt="Garden Suite Hotel — entrance">
-      </div>
-      <div class="card-body">
+        <div class="card-body">
         <ul>
           <li>Dead center of Koreatown (Western Ave, off Wilshire)</li>
           <li>Free parking for one vehicle per room</li>
           <li>Self check-in kiosks</li>
           <li>Suites with kitchenettes available</li>
         </ul>
+        
         <div class="links">
-          <a href="https://gardensuitehotel.com/" target="_blank" rel="noopener">Official site ↗</a>
+<a href="https://gardensuitehotel.com/" target="_blank" rel="noopener">Official site ↗</a>
           <a href="https://maps.google.com/?q=Garden+Suite+Hotel+681+S+Western+Ave+Los+Angeles" target="_blank" rel="noopener">Map ↗</a>
+          <span class="compare-btn" onclick="toggleCompare(this)" data-on="0">⚖️ Compare</span>
         </div>
       </div>
     </article>
 
-    <article class="card">
-      <div class="card-head"><h3>Oxford Palace Hotel &amp; Galleria</h3><span class="price-tag">~$142 / person</span></div>
-      <p class="pp-line">$253 room + ~$30 nearby garage = <strong>~$283 total</strong></p>
-      <p class="addr">745 S Oxford Ave, Los Angeles, CA 90005</p>
-      <div class="chips">
+    <article class="card" data-name="Oxford Palace Hotel &amp; Galleria" data-pp="~$142 / person" data-dk="0.3" data-de="3.1" data-img="images/oxford-room.jpg">
+      <div class="card-media"><div class="gallery">
+        <img src="images/oxford-room.jpg" alt="Oxford Palace — guest room">
+        <img src="images/oxford-lobby.jpg" alt="Oxford Palace — lobby with waterfall">
+        <img src="images/oxford-ext.jpg" alt="Oxford Palace — hotel">
+      </div></div>
+      <div class="card-content">
+        <div class="card-head"><h3>Oxford Palace Hotel &amp; Galleria</h3><span class="price-tag">~$142 / person</span></div>
+        <p class="pp-line">$253 room + ~$30 nearby garage = <strong>~$283 total</strong></p>
+        <p class="addr">745 S Oxford Ave, Los Angeles, CA 90005</p>
+        <div class="chips">
         <span class="chip k"><span class="dot k"></span> 0.3 mi to K-Town</span>
         <span class="chip e"><span class="dot e"></span> 3.1 mi to Expo Park</span>
         <span class="chip">🅿️ no on-site lot</span>
         <span class="chip">🍜 Korean restaurant</span>
       </div>
-      <div class="gallery">
-        <img src="images/oxford-room.jpg" alt="Oxford Palace — guest room">
-        <img src="images/oxford-lobby.jpg" alt="Oxford Palace — lobby with waterfall">
-        <img src="images/oxford-ext.jpg" alt="Oxford Palace — hotel">
-      </div>
-      <div class="card-body">
+        <div class="card-body">
         <ul>
           <li>Lobby with waterfall &amp; marble accents</li>
           <li>Full-service Korean dining on site</li>
           <li>Shopping galleria in the building</li>
           <li>Walking distance to Koreatown dining &amp; shops</li>
         </ul>
+        
         <div class="links">
-          <a href="https://oxfordhotel.com/" target="_blank" rel="noopener">Official site ↗</a>
+<a href="https://oxfordhotel.com/" target="_blank" rel="noopener">Official site ↗</a>
           <a href="https://maps.google.com/?q=Oxford+Palace+Hotel+745+S+Oxford+Ave+Los+Angeles" target="_blank" rel="noopener">Map ↗</a>
+          <span class="compare-btn" onclick="toggleCompare(this)" data-on="0">⚖️ Compare</span>
         </div>
       </div>
     </article>
 
-    <article class="card">
-      <div class="card-head"><h3>Hotel Indigo LA Downtown <small style="font-weight:400;color:var(--muted)">by IHG</small></h3><span class="price-tag">$573 / person</span></div>
-      <p class="pp-line">$1,146 total / 3 nights (~$382/night) + $57 valet = <strong>~$1,260 total</strong></p>
-      <p class="addr">899 Francisco St, Los Angeles, CA 90017</p>
-      <div class="chips">
+    <article class="card" data-name="Hotel Indigo LA Downtown by IHG" data-pp="$573 / person" data-dk="2.8" data-de="2.5" data-img="images/indigo-room.jpg">
+      <div class="card-media"><div class="gallery">
+        <img src="images/indigo-room.jpg" alt="Hotel Indigo — guest room">
+        <img src="images/indigo-lobby.jpg" alt="Hotel Indigo — lobby bar">
+        <img src="images/indigo-ext.jpeg" alt="Hotel Indigo — hotel">
+      </div></div>
+      <div class="card-content">
+        <div class="card-head"><h3>Hotel Indigo LA Downtown <small style="font-weight:400;color:var(--muted)">by IHG</small></h3><span class="price-tag">$573 / person</span></div>
+        <p class="pp-line">$1,146 total / 3 nights (~$382/night) + $57 valet = <strong>~$1,260 total</strong></p>
+        <p class="addr">899 Francisco St, Los Angeles, CA 90017</p>
+        <div class="chips">
         <span class="chip k"><span class="dot k"></span> 2.8 mi to K-Town</span>
         <span class="chip e"><span class="dot e"></span> 2.5 mi to Expo Park</span>
         <span class="chip">🅿️ $57 valet only</span>
         <span class="chip">🌃 Rooftop bar</span>
       </div>
-      <div class="gallery">
-        <img src="images/indigo-room.jpg" alt="Hotel Indigo — guest room">
-        <img src="images/indigo-lobby.jpg" alt="Hotel Indigo — lobby bar">
-        <img src="images/indigo-ext.jpeg" alt="Hotel Indigo — hotel">
-      </div>
-      <div class="card-body">
+        <div class="card-body">
         <ul>
           <li>Newest &amp; most upscale of the five</li>
           <li>18 Social rooftop bar + Metropole Kitchen &amp; Bar</li>
           <li>Walk to Crypto.com Arena &amp; LA Live</li>
           <li>Valet parking (extra fee)</li>
         </ul>
+        
         <div class="links">
-          <a href="https://www.thehotelindigola.com/" target="_blank" rel="noopener">Official site ↗</a>
+<a href="https://www.thehotelindigola.com/" target="_blank" rel="noopener">Official site ↗</a>
           <a href="https://maps.google.com/?q=Hotel+Indigo+Los+Angeles+Downtown+899+Francisco+St" target="_blank" rel="noopener">Map ↗</a>
+          <span class="compare-btn" onclick="toggleCompare(this)" data-on="0">⚖️ Compare</span>
         </div>
       </div>
     </article>
 
-    <article class="card">
-      <div class="card-head"><h3>DoubleTree by Hilton LA Downtown</h3><span class="price-tag">~$130 / person</span></div>
-      <p class="pp-line">~$211 room + $49 self parking = <strong>~$260 total</strong></p>
-      <p class="addr">120 S Los Angeles St, Los Angeles, CA 90012</p>
-      <div class="chips">
+    <article class="card" data-name="DoubleTree by Hilton LA Downtown" data-pp="~$130 / person" data-dk="3.9" data-de="3.4" data-img="images/doubletree-room.jpg">
+      <div class="card-media"><div class="gallery">
+        <img src="images/doubletree-room.jpg" alt="DoubleTree by Hilton — guest room">
+        <img src="images/doubletree-lobby.jpg" alt="DoubleTree by Hilton — lobby">
+        <img src="images/doubletree-ext.jpg" alt="DoubleTree by Hilton — hotel">
+      </div></div>
+      <div class="card-content">
+        <div class="card-head"><h3>DoubleTree by Hilton LA Downtown</h3><span class="price-tag">~$130 / person</span></div>
+        <p class="pp-line">~$211 room + $49 self parking = <strong>~$260 total</strong></p>
+        <p class="addr">120 S Los Angeles St, Los Angeles, CA 90012</p>
+        <div class="chips">
         <span class="chip k"><span class="dot k"></span> 3.9 mi to K-Town</span>
         <span class="chip e"><span class="dot e"></span> 3.4 mi to Expo Park</span>
         <span class="chip">🅿️ $49 self parking</span>
         <span class="chip">⭐ 7.5 Good (1,968 reviews)</span>
       </div>
-      <div class="gallery">
-        <img src="images/doubletree-room.jpg" alt="DoubleTree by Hilton — guest room">
-        <img src="images/doubletree-lobby.jpg" alt="DoubleTree by Hilton — lobby">
-        <img src="images/doubletree-ext.jpg" alt="DoubleTree by Hilton — hotel">
-      </div>
-      <div class="card-body">
+        <div class="card-body">
         <ul>
           <li>4-star Hilton brand — most polished of the budget picks</li>
           <li>Right by Chinatown &amp; Union Station</li>
           <li>Famous warm DoubleTree cookies 🍪</li>
           <li>On-site restaurant &amp; fitness center</li>
         </ul>
+        
         <div class="links">
-          <a href="https://www.kayak.com/hotels/DoubleTree-by-Hilton-Hotel-Los-Angeles-Downtown,Los-Angeles-c16078-h10577-details/" target="_blank" rel="noopener">Kayak listing ↗</a>
+<a href="https://www.kayak.com/hotels/DoubleTree-by-Hilton-Hotel-Los-Angeles-Downtown,Los-Angeles-c16078-h10577-details/" target="_blank" rel="noopener">Kayak listing ↗</a>
           <a href="https://maps.google.com/?q=DoubleTree+by+Hilton+Los+Angeles+Downtown+120+S+Los+Angeles+St" target="_blank" rel="noopener">Map ↗</a>
+          <span class="compare-btn" onclick="toggleCompare(this)" data-on="0">⚖️ Compare</span>
         </div>
       </div>
     </article>
 
-    <article class="card">
-      <div class="card-head"><h3>Hilton Checkers LA</h3><span class="price-tag">$452 / person</span></div>
-      <p class="pp-line">$903 total / 3 nights (~$301/night) + $56 valet = <strong>$1,015 total</strong></p>
-      <p class="addr">535 S Grand Ave, Los Angeles, CA 90071</p>
-      <div class="chips">
+    <article class="card" data-name="Hilton Checkers LA" data-pp="$452 / person" data-dk="3.2" data-de="2.9" data-img="images/checkers-room.jpg">
+      <div class="card-media"><div class="gallery">
+        <img src="images/checkers-room.jpg" alt="Hilton Checkers — guest room">
+        <img src="images/checkers-ext.jpg" alt="Hilton Checkers — hotel">
+      </div></div>
+      <div class="card-content">
+        <div class="card-head"><h3>Hilton Checkers LA</h3><span class="price-tag">$452 / person</span></div>
+        <p class="pp-line">$903 total / 3 nights (~$301/night) + $56 valet = <strong>$1,015 total</strong></p>
+        <p class="addr">535 S Grand Ave, Los Angeles, CA 90071</p>
+        <div class="chips">
         <span class="chip k"><span class="dot k"></span> 3.2 mi to K-Town</span>
         <span class="chip e"><span class="dot e"></span> 2.9 mi to Expo Park</span>
         <span class="chip">🅿️ $56 valet only</span>
         <span class="chip">🏨 Boutique Hilton, 1920s building</span>
       </div>
-      <div class="gallery">
-        <img src="images/checkers-room.jpg" alt="Hilton Checkers — guest room">
-        <img src="images/checkers-ext.jpg" alt="Hilton Checkers — hotel">
-      </div>
-      <div class="card-body">
+        <div class="card-body">
         <ul>
           <li>Boutique Hilton in a restored 1927 Financial District tower</li>
           <li>Next door to the Biltmore on Grand Ave</li>
           <li>Rooftop terrace &amp; on-site restaurant</li>
           <li>Valet parking only ($56/night, in/out included)</li>
         </ul>
+        
         <div class="links">
-          <a href="https://www.hilton.com/en/hotels/laxchhf-hilton-checkers-los-angeles/" target="_blank" rel="noopener">Official site ↗</a>
+<a href="https://www.hilton.com/en/hotels/laxchhf-hilton-checkers-los-angeles/" target="_blank" rel="noopener">Official site ↗</a>
           <a href="https://maps.google.com/?q=Hilton+Checkers+Los+Angeles+535+S+Grand+Ave" target="_blank" rel="noopener">Map ↗</a>
+          <span class="compare-btn" onclick="toggleCompare(this)" data-on="0">⚖️ Compare</span>
         </div>
       </div>
     </article>
 
-    <article class="card">
-      <div class="card-head"><h3>The Westin Bonaventure</h3><span class="price-tag">$576 / person</span></div>
-      <p class="pp-line">$1,151 total / 3 nights (~$384/night) + ~$65 valet = <strong>~$1,281 total</strong></p>
-      <p class="addr">404 S Figueroa St, Los Angeles, CA 90071</p>
-      <div class="chips">
+    <article class="card" data-name="The Westin Bonaventure" data-pp="$576 / person" data-dk="3.1" data-de="3.1" data-img="images/westin-room.jpg">
+      <div class="card-media"><div class="gallery">
+        <img src="images/westin-room.jpg" alt="Westin Bonaventure — guest room">
+        <img src="images/westin-lobby.jpg" alt="Westin Bonaventure — lobby atrium">
+        <img src="images/westin-ext.jpg" alt="Westin Bonaventure — towers">
+      </div></div>
+      <div class="card-content">
+        <div class="card-head"><h3>The Westin Bonaventure</h3><span class="price-tag">$576 / person</span></div>
+        <p class="pp-line">$1,151 total / 3 nights (~$384/night) + ~$65 valet = <strong>~$1,281 total</strong></p>
+        <p class="addr">404 S Figueroa St, Los Angeles, CA 90071</p>
+        <div class="chips">
         <span class="chip k"><span class="dot k"></span> 3.1 mi to K-Town</span>
         <span class="chip e"><span class="dot e"></span> 3.1 mi to Expo Park</span>
         <span class="chip">🅿️ ~$65 valet</span>
         <span class="chip">🌃 Iconic mirrored towers</span>
       </div>
-      <div class="gallery">
-        <img src="images/westin-room.jpg" alt="Westin Bonaventure — guest room">
-        <img src="images/westin-lobby.jpg" alt="Westin Bonaventure — lobby atrium">
-        <img src="images/westin-ext.jpg" alt="Westin Bonaventure — towers">
-      </div>
-      <div class="card-body">
+        <div class="card-body">
         <ul>
           <li>LA icon — five mirrored towers, soaring glass atrium</li>
           <li>Heavenly Beds, floor-to-ceiling skyline views</li>
           <li>Walk to Crypto.com Arena, LA Live &amp; Grand Central Market</li>
           <li>Multiple restaurants &amp; a famous rotating lounge on top</li>
         </ul>
+        
         <div class="links">
-          <a href="https://www.marriott.com/en-us/hotels/laxbw-the-westin-bonaventure-hotel-and-suites-los-angeles/overview/" target="_blank" rel="noopener">Official site ↗</a>
+<a href="https://www.marriott.com/en-us/hotels/laxbw-the-westin-bonaventure-hotel-and-suites-los-angeles/overview/" target="_blank" rel="noopener">Official site ↗</a>
           <a href="https://maps.google.com/?q=Westin+Bonaventure+404+S+Figueroa+St+Los+Angeles" target="_blank" rel="noopener">Map ↗</a>
+          <span class="compare-btn" onclick="toggleCompare(this)" data-on="0">⚖️ Compare</span>
         </div>
       </div>
     </article>
@@ -373,5 +470,42 @@
   </footer>
 
 </main>
+<script>
+function toggleCompare(el){
+  const card = el.closest('.card');
+  const on = el.dataset.on === '1';
+  el.dataset.on = on ? '0' : '1';
+  el.classList.toggle('on', !on);
+  el.textContent = on ? '⚖️ Compare' : '✓ Comparing';
+  card.classList.toggle('selected', !on);
+  renderCompare();
+}
+function clearCompare(){
+  document.querySelectorAll('.compare-btn.on').forEach(b => {
+    b.dataset.on='0'; b.classList.remove('on'); b.textContent='⚖️ Compare';
+  });
+  document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
+  renderCompare();
+}
+function renderCompare(){
+  const sel = [...document.querySelectorAll('.card')].filter(c => c.querySelector('.compare-btn.on'));
+  const panel = document.getElementById('comparePanel');
+  const grid = document.getElementById('cpGrid');
+  document.getElementById('cpCount').textContent = sel.length;
+  if (sel.length < 2) { panel.classList.remove('active'); return; }
+  grid.style.gridTemplateColumns = 'repeat(' + sel.length + ', 1fr)';
+  grid.innerHTML = sel.map(c => `
+    <div class="cp-col">
+      <img src="${c.dataset.img}" alt="">
+      <div class="cp-body">
+        <h5>${c.dataset.name}</h5>
+        <div class="cp-price">${c.dataset.pp}</div>
+        <div class="cp-sub">${c.querySelector('.pp-line').textContent.replace(/^\s+|\s+$/g,'')}</div>
+        <div class="cp-dists">📍 ${c.dataset.dk} mi to K-Town · ${c.dataset.de} mi to Expo Park</div>
+      </div>
+    </div>`).join('');
+  panel.classList.add('active');
+}
+</script>
 </body>
 </html>
