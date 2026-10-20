@@ -43,9 +43,14 @@
   h2.sec-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 4px; }
   p.sec-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 18px; }
   .table-scroll { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+  .sort-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 0.85rem; color: var(--muted); }
+  .sort-btn { border: 1px solid var(--line); background: #fff; color: var(--muted); border-radius: 999px; padding: 4px 14px; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+  .sort-btn.on { background: #1e293b; border-color: #1e293b; color: #fff; }
   table { width: 100%; border-collapse: collapse; min-width: 720px; font-size: 0.95rem; }
   th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--line); }
   th { background: #faf8f4; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  .rank-medal { font-weight: 800; }
+  .pick-tag { display: inline-block; background: #16a34a; color: #fff; font-size: 0.68rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; margin-left: 6px; vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
   td.price { font-weight: 700; color: var(--accent); white-space: nowrap; }
   .dist { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
@@ -147,11 +152,13 @@
 
   <section class="table-sec">
     <h2 class="sec-title">Quick comparison</h2>
-    <p class="sec-sub">Sorted by true per-person cost (room + parking, split two ways). Parking rates are from each hotel's official site. DoubleTree room rate is from the shared Kayak deal ($633 total / 3 nights, before taxes ≈ $211/night). The Hilton, Indigo, and Westin totals are 3-night package quotes (~$301, ~$382, ~$384 per night) shown at per-person totals.</p>
+    <p class="sec-sub">Cheapest = pure per-person cost (room + parking, split two ways). Pi's pick = my overall ranking weighing cost, room quality, reviews, and location for your trip (Uber to Expo Park, pre-gaming, no walking requirement). Hotel Koxie's room rate is my estimate. Hilton/Indigo/Westin rates normalized to per-night from your 3-night package quotes.</p>
+    <div class="sort-row">Sort by: <button class="sort-btn on" id="sb-cheap" onclick="sortTable('cheap')">Cheapest</button><button class="sort-btn" id="sb-rank" onclick="sortTable('rank')">⭐ Pi's pick</button></div>
     <div class="table-scroll">
       <table>
         <thead>
           <tr>
+            <th></th>
             <th>Hotel</th>
             <th>Room / night</th>
             <th>Parking / night</th>
@@ -161,16 +168,16 @@
             <th><span class="dot e"></span> Expo Park</th>
           </tr>
         </thead>
-        <tbody>
-          <tr><td>Olyver Hotel</td><td class="price">$223</td><td>$0 🅿️ free</td><td>$223</td><td class="price">$112</td><td><span class="dist"><span class="dot k"></span>1.3 mi</span></td><td><span class="dist"><span class="dot e"></span>2.5 mi</span></td></tr>
-          <tr><td>Hotel Koxie</td><td class="price">$210</td><td>$15 self</td><td>$225</td><td class="price">~$113</td><td><span class="dist"><span class="dot k"></span>0.7 mi</span></td><td><span class="dist"><span class="dot e"></span>2.9 mi</span></td></tr>
-          <tr><td>Garden Suite Hotel</td><td class="price">$232</td><td>$0 🅿️ free</td><td>$232</td><td class="price">$116</td><td><span class="dist"><span class="dot k"></span>0.1 mi</span></td><td><span class="dist"><span class="dot e"></span>3.3 mi</span></td></tr>
-          <tr><td>DoubleTree by Hilton LA Downtown</td><td class="price">~$211</td><td>$49 self</td><td>~$260</td><td class="price">~$130</td><td><span class="dist"><span class="dot k"></span>3.9 mi</span></td><td><span class="dist"><span class="dot e"></span>3.4 mi</span></td></tr>
-          <tr><td>The Biltmore Los Angeles</td><td class="price">$224</td><td>$50 self / $65 valet</td><td>$274</td><td class="price">$137</td><td><span class="dist"><span class="dot k"></span>3.3 mi</span></td><td><span class="dist"><span class="dot e"></span>3.0 mi</span></td></tr>
-          <tr><td>Oxford Palace Hotel &amp; Galleria</td><td class="price">$253</td><td>no on-site · ~$30 nearby*</td><td>~$283</td><td class="price">~$142</td><td><span class="dist"><span class="dot k"></span>0.3 mi</span></td><td><span class="dist"><span class="dot e"></span>3.1 mi</span></td></tr>
-          <tr><td>Hotel Indigo LA Downtown</td><td class="price">~$382</td><td>$57 valet only</td><td>~$439</td><td class="price">~$573/3n</td><td><span class="dist"><span class="dot k"></span>2.8 mi</span></td><td><span class="dist"><span class="dot e"></span>2.5 mi</span></td></tr>
-          <tr><td>Hilton Checkers LA</td><td class="price">~$301</td><td>$56 valet only</td><td>~$357</td><td class="price">~$452/3n</td><td><span class="dist"><span class="dot k"></span>3.2 mi</span></td><td><span class="dist"><span class="dot e"></span>2.9 mi</span></td></tr>
-          <tr><td>The Westin Bonaventure</td><td class="price">~$384</td><td>~$65 valet</td><td>~$449</td><td class="price">~$576/3n</td><td><span class="dist"><span class="dot k"></span>3.1 mi</span></td><td><span class="dist"><span class="dot e"></span>3.1 mi</span></td></tr>
+        <tbody id="cmpBody">
+          <tr data-k="1" data-r="2"><td><span class="rank-medal">🥇</span></td><td>Garden Suite Hotel</td><td class="price">$232</td><td>$0 🅿️ free</td><td>$232</td><td class="price">$116</td><td><span class="dist"><span class="dot k"></span>0.1 mi</span></td><td><span class="dist"><span class="dot e"></span>3.3 mi</span></td></tr>
+          <tr data-k="2" data-r="1"><td><span class="rank-medal">🥇</span></td><td>Hotel Koxie <span class="pick-tag">Pi's pick</span></td><td class="price">$210*</td><td>$15 self</td><td>$225</td><td class="price">~$113</td><td><span class="dist"><span class="dot k"></span>0.7 mi</span></td><td><span class="dist"><span class="dot e"></span>2.9 mi</span></td></tr>
+          <tr data-k="3" data-r="4"><td><span class="rank-medal">🥉</span></td><td>DoubleTree by Hilton LA Downtown</td><td class="price">~$211</td><td>$49 self</td><td>$260</td><td class="price">~$130</td><td><span class="dist"><span class="dot k"></span>3.9 mi</span></td><td><span class="dist"><span class="dot e"></span>3.4 mi</span></td></tr>
+          <tr data-k="4" data-r="5"><td><span class="rank-medal">4</span></td><td>Olyver Hotel</td><td class="price">$223</td><td>$0 🅿️ free</td><td>$223</td><td class="price">$112</td><td><span class="dist"><span class="dot k"></span>1.3 mi</span></td><td><span class="dist"><span class="dot e"></span>2.5 mi</span></td></tr>
+          <tr data-k="5" data-r="3"><td><span class="rank-medal">🥈</span></td><td>The Biltmore Los Angeles</td><td class="price">$224</td><td>$50 self / $65 valet</td><td>$274</td><td class="price">$137</td><td><span class="dist"><span class="dot k"></span>3.3 mi</span></td><td><span class="dist"><span class="dot e"></span>3.0 mi</span></td></tr>
+          <tr data-k="6" data-r="6"><td><span class="rank-medal">6</span></td><td>Oxford Palace Hotel &amp; Galleria</td><td class="price">$253</td><td>no on-site · ~$30 nearby*</td><td>~$283</td><td class="price">~$142</td><td><span class="dist"><span class="dot k"></span>0.3 mi</span></td><td><span class="dist"><span class="dot e"></span>3.1 mi</span></td></tr>
+          <tr data-k="7" data-r="7"><td><span class="rank-medal">7</span></td><td>Hilton Checkers LA</td><td class="price">~$301</td><td>$56 valet only</td><td>~$357</td><td class="price">~$179</td><td><span class="dist"><span class="dot k"></span>3.2 mi</span></td><td><span class="dist"><span class="dot e"></span>2.9 mi</span></td></tr>
+          <tr data-k="8" data-r="8"><td><span class="rank-medal">8</span></td><td>Hotel Indigo LA Downtown</td><td class="price">~$382</td><td>$57 valet only</td><td>~$439</td><td class="price">~$220</td><td><span class="dist"><span class="dot k"></span>2.8 mi</span></td><td><span class="dist"><span class="dot e"></span>2.5 mi</span></td></tr>
+          <tr data-k="9" data-r="9"><td><span class="rank-medal">9</span></td><td>The Westin Bonaventure</td><td class="price">~$384</td><td>~$65 valet</td><td>~$449</td><td class="price">~$224</td><td><span class="dist"><span class="dot k"></span>3.1 mi</span></td><td><span class="dist"><span class="dot e"></span>3.1 mi</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -466,7 +473,8 @@
   </section>
 
   <footer>
-    <p><strong>Notes:</strong> Room prices are what I'm seeing on my booking portal (before taxes/fees) — double-check at booking time. <strong>Per person</strong> = (room + parking) ÷ 2, assuming one room, one car, two people. Parking rates are from official hotel sites (Hilton, IHG, Marriott); Biltmore self-park $50 / valet $65; DoubleTree self-park $49 (+10% tax at the gate); Indigo valet-only $57 + tax; Hilton Checkers valet-only $56; Westin valet ~$65. <em>The Hilton, Indigo, and Westin are 3-night package quotes — their "per person" figures are the quoted 3-night totals per person, so compare those against 3 × the others' per-person rates.</em> *Oxford Palace has no on-site parking — nearby garages run ~$25–40/night, so its total is an estimate. Distances are straight-line from the hotel to the center of Korea Town (Wilshire &amp; Western) and to Exposition Park; actual driving is a bit longer. Photos are from the hotels' official sites and public listings.</p>
+    <p><strong>Pi's ranking explained (1–9):</strong> 🥇 <strong>Hotel Koxie</strong> — cheapest real cost AND 0.7 mi from K-Town, modern rooms, cheap parking; only knock is an estimated rate. 🥇 <strong>Garden Suite</strong> — nearly identical value, free parking, dead-center location. 🥈 <strong>Biltmore</strong> — you disliked the old look, but dollar-for-dollar it's the most hotel for $137/person; ranked 3rd only on taste. 🥉 <strong>DoubleTree</strong> — solid 4-star but parking erases its price edge and it's farthest from K-Town. <strong>Olyver</strong> — cheap but the most basic property. <strong>Oxford Palace</strong> — fine, dominated by Garden Suite nearby. <strong>Checkers / Indigo / Westin</strong> — lovely hotels, but 1.5–2× the per-person cost of the top picks for the same Uber ride everywhere.</p>
+    <p><strong>Notes:</strong> Room prices are what I'm seeing on my booking portal (before taxes/fees) — double-check at booking time. <strong>Per person</strong> = (room + parking) ÷ 2, assuming one room, one car, two people. Parking rates are from official hotel sites (Hilton, IHG, Marriott); Biltmore self-park $50 / valet $65; DoubleTree self-park $49 (+10% tax at the gate); Indigo valet-only $57 + tax; Hilton Checkers valet-only $56; Westin valet ~$65; Koxie self-park $15. *Koxie's room rate is my estimate (~$210) — send me the real number. Hilton/Indigo/Westin room rates are your 3-night package quotes normalized to per-night. *Oxford Palace has no on-site parking — nearby garages run ~$25–40/night, so its total is an estimate. Distances are straight-line from the hotel to the center of Korea Town (Wilshire &amp; Western) and to Exposition Park; actual driving is a bit longer. Photos are from the hotels' official sites and public listings.</p>
   </footer>
 
 </main>
@@ -505,6 +513,14 @@ function renderCompare(){
       </div>
     </div>`).join('');
   panel.classList.add('active');
+}
+function sortTable(mode){
+  const body = document.getElementById('cmpBody');
+  const rows = [...body.querySelectorAll('tr')];
+  const key = mode === 'rank' ? 'data-r' : 'data-k';
+  rows.sort((a,b) => (+a.getAttribute(key)) - (+b.getAttribute(key))).forEach(r => body.appendChild(r));
+  document.getElementById('sb-cheap').classList.toggle('on', mode==='cheap');
+  document.getElementById('sb-rank').classList.toggle('on', mode==='rank');
 }
 </script>
 </body>
